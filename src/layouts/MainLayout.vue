@@ -12,10 +12,53 @@
         />
 
         <q-toolbar-title>
-          Quasar App
+          Eco Truck
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <div v-if="!userStore.id">
+          <q-btn
+            class="tw-mr-2"
+            push
+            :to="{ name: 'login' }"
+          >Login</q-btn>
+          <q-btn
+            push
+            :to="{ name: 'register' }"
+          >Criar conta</q-btn>
+        </div>
+        <div v-else>
+          <q-btn push>
+            {{ userStore.name }}
+            <q-menu>
+              <div class="row no-wrap q-pa-md">
+                <div>
+                  <div class="text-h6 q-mb-md">Opções</div>
+                  <div class="column q-gutter-sm">
+                    <q-btn color="secondary">Perfil</q-btn>
+                    <q-btn>Histórico</q-btn>
+                  </div>
+                </div>
+
+                <q-separator vertical inset class="q-mx-lg" />
+
+                <div class="column items-center">
+                  <q-avatar size="72px">
+                    <img src="https://cdn.quasar.dev/img/avatar4.jpg" alt="foto de perfil">
+                  </q-avatar>
+
+                  <div class="text-subtitle1 q-mt-md q-mb-xs">{{userStore.name}}</div>
+
+                  <q-btn
+                    color="negative"
+                    push
+                    size="sm"
+                    :loading="loading"
+                  >deslogar</q-btn>
+                </div>
+              </div>
+            </q-menu>
+          </q-btn>
+        </div>
       </q-toolbar>
     </q-header>
 
@@ -30,7 +73,6 @@
         >
           Essential Links
         </q-item-label>
-
         <EssentialLink
           v-for="link in linksList"
           :key="link.title"
@@ -48,51 +90,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import EssentialLink, { EssentialLinkProps } from 'components/EssentialLink.vue';
-
-const linksList: EssentialLinkProps[] = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
-];
+import useUserStore, { IUser } from 'stores/useUserStore';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -102,16 +100,51 @@ export default defineComponent({
   },
 
   data () {
+    const linksList: EssentialLinkProps[] = [
+      {
+        title: 'Pagina inicial',
+        icon: 'school',
+        name: 'home'
+      },
+    ];
+
     return {
       linksList,
-      leftDrawerOpen: false
+      leftDrawerOpen: false,
+      userStore: useUserStore(),
+      loading: false
     }
   },
 
   methods: {
     toggleLeftDrawer () {
       this.leftDrawerOpen = !this.leftDrawerOpen;
+    },
+    async recoverUser(): Promise<void> {
+      await this.$axios.get('/me')
+        .then(response => {
+          console.log(response.data);
+          this.userStore.setUser(response.data as IUser);
+        })
+        .catch(error => {
+          console.log(error);
+        })
+        .finally(() => {
+          console.log('teste');
+        })
+    },
+    async logout() {
+      this.loading = true;
+      this.$axios.post('/logout')
+        .then(() => {
+          this.userStore.resetUser();
+        })
+      this.loading = false;
     }
+  },
+
+  mounted() {
+    this.recoverUser();
   }
 });
 </script>

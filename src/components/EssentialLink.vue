@@ -1,9 +1,7 @@
 <template>
   <q-item
     clickable
-    tag="a"
-    target="_blank"
-    :href="link"
+    :to="{name: name}"
   >
     <q-item-section
       v-if="icon"
@@ -25,7 +23,7 @@ import { defineComponent } from 'vue';
 export interface EssentialLinkProps {
   title: string;
   caption?: string;
-  link?: string;
+  name: string;
   icon?: string;
 };
 
@@ -42,15 +40,16 @@ export default defineComponent({
       default: ''
     },
 
-    link: {
+    name: {
       type: String,
-      default: '#'
+      required: true
     },
 
     icon: {
       type: String,
       default: ''
     }
-  }
+  },
+
 });
 </script>
