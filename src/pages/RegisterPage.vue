@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
-import useUserStore, { IUser } from 'stores/useUserStore';
+import useUserStore from 'stores/useUserStore';
+import IUser from 'src/interfaces/IUser';
 
 export default defineComponent({
   name: 'RegisterPage',
@@ -11,67 +12,56 @@ export default defineComponent({
       email: '',
       password: ''
     }
+    const userStore = useUserStore();
     return {
       form,
+      userStore,
+      rules: userStore.rules,
       loading: false,
-      userStore: useUserStore(),
       showPassword: false,
-      rules: {
-        name: [
-          (value: string): boolean | string => {
-            return !!value ? true : 'É necessário digitar seu nome!';
-          }
-        ],
-        email: [
-          (value: string): boolean | string => {
-            return !!value ? true : 'É necessário digitar um email!';
-          },
-          (value: string): boolean | string => {
-            if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-              return true;
-            }
-            return 'Email invalido!';
-          },
-        ],
-        password: [
-          (value: string): boolean | string => {
-            return !!value ? true : 'É necessário digitar sua senha!';
-          },
-          (value: string): boolean | string => {
-            if (value.length < 6) {
-              return 'Sua senha deve conter no minimo 6 digitos';
-            } else if (/[A-Za-z]/.test(value) && /\d/.test(value)) {
-              return true;
-            } else {
-              return 'Sua senha deve conter números e letras';
-            }
-          },
-        ]
-      }
     }
   },
 
   methods: {
-    async submit() {
+    async submit(): Promise<void> {
       this.loading = true;
+      const notify = this.$q.notify({
+        spinner: true,
+        message: 'Carregando...',
+        timeout: 0,
+        group: false
+      });
+      const notifyNegative = () => {
+        notify({
+          type: 'negative',
+          message: 'Não foi possível realizar seu cadastro! preencha os campos corretamente',
+          timeout: 4000,
+          icon: 'warning',
+          spinner: false
+        });
+      }
       await this.$axios.post('/register', this.form)
         .then(response => {
-          console.log(response.data);
           if(response.data.success) {
             this.userStore.setUser(response.data.data as IUser);
             this.$router.push({name: 'home'});
+            notify({
+              spinner: false,
+              message: 'Cadastro realizado com sucesso!',
+              type: 'positive',
+              timeout: 3000,
+              icon: 'done'
+            });
+          } else {
+            notifyNegative();
           }
         })
-        .catch(error => {
-          console.log(error)
+        .catch(() => {
+          notifyNegative();
         });
       this.loading = false;
     }
   },
-
-  mounted() {
-    console.log(this.$axios.defaults.baseURL);
-  }
 });
 </script>
 

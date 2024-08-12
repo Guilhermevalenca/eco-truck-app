@@ -34,7 +34,7 @@
                 <div>
                   <div class="text-h6 q-mb-md">Opções</div>
                   <div class="column q-gutter-sm">
-                    <q-btn color="secondary">Perfil</q-btn>
+                    <q-btn color="secondary" :to="{name: 'profile'}">Perfil</q-btn>
                     <q-btn>Histórico</q-btn>
                   </div>
                 </div>
@@ -53,6 +53,7 @@
                     push
                     size="sm"
                     :loading="loading"
+                    @click="logout"
                   >deslogar</q-btn>
                 </div>
               </div>
@@ -90,7 +91,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import EssentialLink, { EssentialLinkProps } from 'components/EssentialLink.vue';
-import useUserStore, { IUser } from 'stores/useUserStore';
+import useUserStore from 'stores/useUserStore';
+import IUser from 'src/interfaces/IUser';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -117,28 +119,21 @@ export default defineComponent({
   },
 
   methods: {
-    toggleLeftDrawer () {
+    toggleLeftDrawer(): void {
       this.leftDrawerOpen = !this.leftDrawerOpen;
     },
     async recoverUser(): Promise<void> {
       await this.$axios.get('/me')
         .then(response => {
-          console.log(response.data);
           this.userStore.setUser(response.data as IUser);
-        })
-        .catch(error => {
-          console.log(error);
-        })
-        .finally(() => {
-          console.log('teste');
-        })
+        });
     },
-    async logout() {
+    async logout(): Promise<void> {
       this.loading = true;
       this.$axios.post('/logout')
         .then(() => {
           this.userStore.resetUser();
-        })
+        });
       this.loading = false;
     }
   },

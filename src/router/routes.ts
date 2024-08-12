@@ -1,5 +1,5 @@
 import { RouteRecordRaw } from 'vue-router';
-import { noLogged } from 'src/router/guards/authGuards';
+import { noLogged, logged } from 'src/router/guards/authGuards';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -22,6 +22,12 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/RegisterPage.vue'),
         name: 'register',
         beforeEnter: noLogged
+      },
+      {
+        path: '/profile',
+        component: () => import('pages/ProfilePage.vue'),
+        name: 'profile',
+        beforeEnter: logged
       }
     ],
   },

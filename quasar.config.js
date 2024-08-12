@@ -80,7 +80,7 @@ module.exports = configure(function (/* ctx */) {
           eslint: {
             lintCommand: 'eslint "./**/*.{js,ts,mjs,cjs,vue}"'
           }
-        }, { server: false }]
+        }, { server: true }]
       ]
     },
 
@@ -105,12 +105,15 @@ module.exports = configure(function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: []
+      plugins: [
+        'Notify',
+        'Dark'
+      ]
     },
 
     // animations: 'all', // --- includes all animations
     // https://v2.quasar.dev/options/animations
-    animations: [],
+    animations: 'all',
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#sourcefiles
     // sourceFiles: {
@@ -134,8 +137,8 @@ module.exports = configure(function (/* ctx */) {
 
       pwa: true,
 
-      // manualStoreHydration: true,
-      // manualPostHydrationTrigger: true,
+      manualStoreHydration: false,
+      manualPostHydrationTrigger: false,
 
       prodPort: 3000, // The default port that the production server should use
                       // (gets superseded if process.env.PORT is specified at runtime)

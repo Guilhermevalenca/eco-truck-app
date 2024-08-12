@@ -1,6 +1,6 @@
 <template>
   <q-page class="row items-center justify-evenly">
-    <div>Pagina inicial</div>
+    <div>Gameplay advanced</div>
   </q-page>
 </template>
 

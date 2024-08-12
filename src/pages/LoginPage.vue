@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
-import useUserStore, { IUser } from 'stores/useUserStore';
+import useUserStore from 'stores/useUserStore';
+import IUser from 'src/interfaces/IUser';
 
 export default defineComponent({
   name: 'LoginPage',
@@ -10,56 +11,57 @@ export default defineComponent({
       email: '',
       password: ''
     }
+    const userStore = useUserStore();
     return {
       form,
+      userStore,
       loading: false,
-      userStore: useUserStore(),
       showPassword: false,
-      rules: {
-        email: [
-          (value: string): boolean | string => {
-            return !!value ? true : 'É necessário digitar um email!';
-          },
-          (value: string): boolean | string => {
-            if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-              return true;
-            }
-            return 'Email invalido!';
-          },
-        ],
-        password: [
-          (value: string): boolean | string => {
-            return !!value ? true : 'É necessário digitar sua senha!';
-          },
-          (value: string): boolean | string => {
-            if (value.length < 6) {
-              return 'Sua senha deve conter no minimo 6 digitos';
-            } else if (/[A-Za-z]/.test(value) && /\d/.test(value)) {
-              return true;
-            } else {
-              return 'Sua senha deve conter números e letras';
-            }
-          },
-        ]
-      }
+      rules: userStore?.rules
     }
   },
 
   methods: {
-    async submit() {
+    async submit(): Promise<void> {
       this.loading = true;
+      this.showPassword = false;
+      const notify = this.$q.notify({
+        spinner: true,
+        message: 'Carregando...',
+        timeout: 0,
+        group: false
+      });
+      const notifyNegative = () => {
+        notify({
+          type: 'negative',
+          message: 'Não foi possível realizar seu login! Email ou senha incorretos.',
+          timeout: 4000,
+          icon: 'warning',
+          spinner: false
+        });
+      }
       await this.$axios.post('/login', this.form)
         .then(response => {
-          console.log(response.data);
           if(response.data.success) {
             this.userStore.setUser(response.data.data as IUser);
             this.$router.push({name: 'home'});
+            notify({
+              spinner: false,
+              message: 'Login realizado com sucesso!',
+              type: 'positive',
+              timeout: 3000,
+              icon: 'done'
+            });
+          } else {
+            notifyNegative();
           }
         })
-        .catch(error => {
-          console.log(error)
+        .catch(() => {
+          notifyNegative();
+        })
+        .finally(() => {
+          this.loading = false;
         });
-      this.loading = false;
     }
   }
 });
@@ -78,6 +80,7 @@ export default defineComponent({
       outlined
       :loading="loading"
       :rules="rules.email"
+      :disable="loading"
     />
     <q-input
       v-model="form.password"
@@ -86,6 +89,7 @@ export default defineComponent({
       :loading="loading"
       :type="showPassword ? 'text' : 'password'"
       :rules="rules.password"
+      :disable="loading"
     >
       <template #append>
         <q-icon
