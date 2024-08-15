@@ -12,6 +12,18 @@ const api = axios.create({
   withCredentials: true,
 });
 
+api.interceptors.request.use(config => {
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
+
+api.interceptors.response.use(response => {
+  return response;
+}, error => {
+  return Promise.reject(error);
+});
+
 export default boot(({ app }) => {
   app.config.globalProperties.$axios = api;
 });

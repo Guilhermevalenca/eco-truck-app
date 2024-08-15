@@ -123,7 +123,7 @@ export default defineComponent({
       this.leftDrawerOpen = !this.leftDrawerOpen;
     },
     async recoverUser(): Promise<void> {
-      await this.$axios.get('/me')
+      await this.$axios.get('/user')
         .then(response => {
           this.userStore.setUser(response.data as IUser);
         });
