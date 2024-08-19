@@ -13,6 +13,30 @@ export default defineComponent({
       loading: false,
       showDialog: false
     }
+  },
+
+  methods: {
+    async submit() {
+      this.$axios.delete('/user', {
+        data: {
+          password: this.password,
+        }
+      })
+        .then((response) => {
+          if(response.status === 204) {
+            this.$router.push('/login');
+          }
+        })
+        .catch(() => {
+          this.$q.notify({
+            message: 'Não foi possível deletar sua conta',
+            type: 'negative',
+            icon: 'warning',
+            position: 'center',
+            timeout: 2000
+          });
+        })
+    }
   }
 });
 </script>
@@ -34,40 +58,44 @@ export default defineComponent({
     backdrop-filter="blur(4px)"
   >
     <div class="full-width row justify-center">
-      <q-card class="col-8">
-        <q-card-section>
-          <q-input
-            v-model="password"
-            label="Password"
-            outlined
-            :loading="loading"
-            :type="showPassword ? 'text' : 'password'"
-            :rules="rules.password"
-            :disable="loading"
-          >
-            <template #append>
-              <q-icon
-                :name="`mdi-${showPassword ? 'eye-outline' : 'eye-off-outline'}`"
-                @click="showPassword = !showPassword"
-              />
-            </template>
-          </q-input>
-        </q-card-section>
-        <q-card-actions class="flex justify-center">
-          <q-btn
-            :disable="loading"
-            v-close-popup
-            label="cancelar"
-          />
-          <q-btn
-            color="negative"
-            :loading="loading"
-            :disable="loading"
-          >
-            Deletar conta
-          </q-btn>
-        </q-card-actions>
-      </q-card>
+      <q-form class="col-8" @submit.prevent="submit">
+        <q-card>
+          <q-card-section>
+            <q-input
+              v-model="password"
+              label="Password"
+              outlined
+              :loading="loading"
+              :type="showPassword ? 'text' : 'password'"
+              :rules="rules.password"
+              :disable="loading"
+            >
+              <template #append>
+                <q-icon
+                  :name="`mdi-${showPassword ? 'eye-outline' : 'eye-off-outline'}`"
+                  @click="showPassword = !showPassword"
+                />
+              </template>
+            </q-input>
+          </q-card-section>
+          <q-card-actions class="flex justify-center">
+            <q-btn
+              :disable="loading"
+              v-close-popup
+              label="cancelar"
+              type="button"
+            />
+            <q-btn
+              color="negative"
+              :loading="loading"
+              :disable="loading"
+              type="submit"
+            >
+              Deletar conta
+            </q-btn>
+          </q-card-actions>
+        </q-card>
+      </q-form>
     </div>
   </q-dialog>
 </template>
