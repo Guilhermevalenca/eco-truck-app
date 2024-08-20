@@ -13,7 +13,8 @@ export default defineComponent({
       form: {
         title: '',
         description: ''
-      }
+      },
+      sessionPage: 'index' as string
     }
   },
 
@@ -35,6 +36,7 @@ export default defineComponent({
             spinner: false
           });
           this.todos = response.data as ITodo[];
+          this.sessionPage = 'index';
         })
         .catch(() => {
           notify({
@@ -71,44 +73,56 @@ export default defineComponent({
 
 <template>
   <q-page class="row items-center justify-evenly">
-    <q-card
-      v-for="todo in todos" :key="todo.id"
+    <q-tabs
+      v-model="sessionPage"
     >
-      <q-card-section>
-        <strong>Titulo: </strong>
-        <span>{{todo.title}}</span>
-      </q-card-section>
-      <q-card-section>
-        <strong>Descrição: </strong>
-        <span>{{todo.description}}</span>
-      </q-card-section>
-      <q-card-actions>
-        <q-btn @click="$router.push({name: 'todoEdit', params: {id: todo.id}})">
-          editar
-        </q-btn>
-        <q-btn
-          color="negative"
-          @click="deleteTodo(Number(todo.id))"
+      <q-tab name="index">Todos</q-tab>
+      <q-tab name="create">Criar pagina</q-tab>
+    </q-tabs>
+    <q-tab-panels v-model="sessionPage" class="col-11">
+      <q-tab-panel name="index" class="row">
+        <q-card
+          v-for="todo in todos" :key="todo.id"
         >
-          Delete
-        </q-btn>
-      </q-card-actions>
-    </q-card>
-    <q-form
-      @submit.prevent="submit"
-    >
-      <q-input
-        v-model="form.title"
-        outlined
-        placeholder="Titulo"
-      />
-      <q-input
-        v-model="form.description"
-        outlined
-        placeholder="Descrição"
-      />
-      <q-btn type="submit" push color="primary">Criar</q-btn>
-    </q-form>
+          <q-card-section>
+            <strong>Titulo: </strong>
+            <span>{{todo.title}}</span>
+          </q-card-section>
+          <q-card-section>
+            <strong>Descrição: </strong>
+            <span>{{todo.description}}</span>
+          </q-card-section>
+          <q-card-actions>
+            <q-btn @click="$router.push({name: 'todoEdit', params: {id: todo.id}})">
+              editar
+            </q-btn>
+            <q-btn
+              color="negative"
+              @click="deleteTodo(Number(todo.id))"
+            >
+              Delete
+            </q-btn>
+          </q-card-actions>
+        </q-card>
+      </q-tab-panel>
+      <q-tab-panel name="create">
+        <q-form
+          @submit.prevent="submit"
+        >
+          <q-input
+            v-model="form.title"
+            outlined
+            placeholder="Titulo"
+          />
+          <q-input
+            v-model="form.description"
+            outlined
+            placeholder="Descrição"
+          />
+          <q-btn type="submit" push color="primary">Criar</q-btn>
+        </q-form>
+      </q-tab-panel>
+    </q-tab-panels>
   </q-page>
 </template>
 
