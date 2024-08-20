@@ -1,7 +1,7 @@
 import { NavigationGuardNext, RouteLocationNormalizedGeneric, RouteLocationNormalizedLoadedGeneric } from 'vue-router';
 import {api} from 'boot/axios';
 
-export async function noLogged(
+export async function noLogged (
   to: RouteLocationNormalizedGeneric,
   from:  RouteLocationNormalizedLoadedGeneric,
   next:  NavigationGuardNext
@@ -17,7 +17,7 @@ export async function noLogged(
     next({name: 'home'});
   }
 }
-export async function logged(
+export async function logged (
   to: RouteLocationNormalizedGeneric,
   from: RouteLocationNormalizedLoadedGeneric,
   next:  NavigationGuardNext

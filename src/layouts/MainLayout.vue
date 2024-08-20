@@ -108,6 +108,11 @@ export default defineComponent({
         icon: 'school',
         name: 'home'
       },
+      {
+        title: 'todos',
+        icon: 'mdi-list-box-outline',
+        name: 'todo'
+      }
     ];
 
     return {

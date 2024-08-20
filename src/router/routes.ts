@@ -27,7 +27,18 @@ const routes: RouteRecordRaw[] = [
         path: '/profile',
         component: () => import('pages/ProfilePage.vue'),
         name: 'profile',
-        beforeEnter: logged
+        beforeEnter: logged,
+      },
+      {
+        path: '/todo',
+        component: () => import('pages/TodoPage.vue'),
+        name: 'todo'
+      },
+      {
+        path: '/todo/:id',
+        component: () => import('pages/TodoEditPage.vue'),
+        name: 'todoEdit',
+        props: true
       }
     ],
   },
