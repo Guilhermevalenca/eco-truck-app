@@ -5,7 +5,7 @@ export default defineStore('user', {
   state: (): IUser => ({
     id: undefined,
     name: '',
-    email: ''
+    email: '',
   }),
   getters: {
     rules() {
@@ -13,7 +13,7 @@ export default defineStore('user', {
         name: [
           (value: string): boolean | string => {
             return !!value ? true : 'É necessário digitar seu nome!';
-          }
+          },
         ],
         email: [
           (value: string): boolean | string => {
@@ -39,9 +39,9 @@ export default defineStore('user', {
               return 'Sua senha deve conter números e letras';
             }
           },
-        ]
-      }
-    }
+        ],
+      };
+    },
   },
   actions: {
     setUser(data: IUser): void {
@@ -53,6 +53,6 @@ export default defineStore('user', {
       this.id = undefined;
       this.name = '';
       this.email = '';
-    }
+    },
   },
-})
+});

@@ -9,16 +9,16 @@ export default defineComponent({
   data() {
     const form: IUser = {
       email: '',
-      password: ''
-    }
+      password: '',
+    };
     const userStore = useUserStore();
     return {
       form,
       userStore,
       loading: false,
       showPassword: false,
-      rules: userStore?.rules
-    }
+      rules: userStore?.rules,
+    };
   },
 
   methods: {
@@ -29,28 +29,30 @@ export default defineComponent({
         spinner: true,
         message: 'Carregando...',
         timeout: 0,
-        group: false
+        group: false,
       });
       const notifyNegative = () => {
         notify({
           type: 'negative',
-          message: 'Não foi possível realizar seu login! Email ou senha incorretos.',
+          message:
+            'Não foi possível realizar seu login! Email ou senha incorretos.',
           timeout: 4000,
           icon: 'warning',
-          spinner: false
+          spinner: false,
         });
-      }
-      await this.$axios.post('/login', this.form)
-        .then(response => {
-          if(response.data.success) {
+      };
+      await this.$axios
+        .post('/login', this.form)
+        .then((response) => {
+          if (response.data.success) {
             this.userStore.setUser(response.data.data as IUser);
-            this.$router.push({name: 'home'});
+            this.$router.push({ name: 'home' });
             notify({
               spinner: false,
               message: 'Login realizado com sucesso!',
               type: 'positive',
               timeout: 3000,
-              icon: 'done'
+              icon: 'done',
             });
           } else {
             notifyNegative();
@@ -62,50 +64,47 @@ export default defineComponent({
         .finally(() => {
           this.loading = false;
         });
-    }
-  }
+    },
+  },
 });
 </script>
 
 <template>
-<q-page class="row items-center justify-evenly">
-  <q-form
-    @submit.prevent="submit"
-    class="col-10 q-gutter-xs"
-  >
-    <q-input
-      v-model="form.email"
-      label="Email"
-      type="email"
-      outlined
-      :loading="loading"
-      :rules="rules.email"
-      :disable="loading"
-    />
-    <q-input
-      v-model="form.password"
-      label="Password"
-      outlined
-      :loading="loading"
-      :type="showPassword ? 'text' : 'password'"
-      :rules="rules.password"
-      :disable="loading"
-    >
-      <template #append>
-        <q-icon
-          :name="`mdi-${showPassword ? 'eye-outline' : 'eye-off-outline'}`"
-          @click="showPassword = !showPassword"
-        />
-      </template>
-    </q-input>
+  <q-page class="row items-center justify-evenly">
+    <q-form @submit.prevent="submit" class="col-10 q-gutter-xs">
+      <q-input
+        v-model="form.email"
+        label="Email"
+        type="email"
+        outlined
+        :loading="loading"
+        :rules="rules.email"
+        :disable="loading"
+      />
+      <q-input
+        v-model="form.password"
+        label="Password"
+        outlined
+        :loading="loading"
+        :type="showPassword ? 'text' : 'password'"
+        :rules="rules.password"
+        :disable="loading"
+      >
+        <template #append>
+          <q-icon
+            :name="`mdi-${showPassword ? 'eye-outline' : 'eye-off-outline'}`"
+            @click="showPassword = !showPassword"
+          />
+        </template>
+      </q-input>
 
-    <div class="flex justify-end">
-      <q-btn color="primary" :loading="loading" type="submit">Criar conta</q-btn>
-    </div>
-  </q-form>
-</q-page>
+      <div class="flex justify-end">
+        <q-btn color="primary" :loading="loading" type="submit"
+          >Criar conta</q-btn
+        >
+      </div>
+    </q-form>
+  </q-page>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

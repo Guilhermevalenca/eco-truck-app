@@ -11,20 +11,11 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title>
-          Eco Truck
-        </q-toolbar-title>
+        <q-toolbar-title> Eco Truck </q-toolbar-title>
 
         <div v-if="!userStore.id">
-          <q-btn
-            class="tw-mr-2"
-            push
-            :to="{ name: 'login' }"
-          >Login</q-btn>
-          <q-btn
-            push
-            :to="{ name: 'register' }"
-          >Criar conta</q-btn>
+          <q-btn class="tw-mr-2" push :to="{ name: 'login' }">Login</q-btn>
+          <q-btn push :to="{ name: 'register' }">Criar conta</q-btn>
         </div>
         <div v-else>
           <q-btn push>
@@ -34,7 +25,9 @@
                 <div>
                   <div class="text-h6 q-mb-md">Opções</div>
                   <div class="column q-gutter-sm">
-                    <q-btn color="secondary" :to="{name: 'profile'}">Perfil</q-btn>
+                    <q-btn color="secondary" :to="{ name: 'profile' }"
+                      >Perfil</q-btn
+                    >
                     <q-btn>Histórico</q-btn>
                   </div>
                 </div>
@@ -43,10 +36,15 @@
 
                 <div class="column items-center">
                   <q-avatar size="72px">
-                    <img src="https://cdn.quasar.dev/img/avatar4.jpg" alt="foto de perfil">
+                    <img
+                      src="https://cdn.quasar.dev/img/avatar4.jpg"
+                      alt="foto de perfil"
+                    />
                   </q-avatar>
 
-                  <div class="text-subtitle1 q-mt-md q-mb-xs">{{userStore.name}}</div>
+                  <div class="text-subtitle1 q-mt-md q-mb-xs">
+                    {{ userStore.name }}
+                  </div>
 
                   <q-btn
                     color="negative"
@@ -54,7 +52,8 @@
                     size="sm"
                     :loading="loading"
                     @click="logout"
-                  >deslogar</q-btn>
+                    >deslogar</q-btn
+                  >
                 </div>
               </div>
             </q-menu>
@@ -63,17 +62,9 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-    >
+    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-list>
-        <q-item-label
-          header
-        >
-          Essential Links
-        </q-item-label>
+        <q-item-label header> Essential Links </q-item-label>
         <EssentialLink
           v-for="link in linksList"
           :key="link.title"
@@ -90,7 +81,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import EssentialLink, { EssentialLinkProps } from 'components/EssentialLink.vue';
+import EssentialLink, {
+  EssentialLinkProps,
+} from 'components/EssentialLink.vue';
 import useUserStore from 'stores/useUserStore';
 import IUser from 'src/interfaces/IUser';
 
@@ -98,15 +91,15 @@ export default defineComponent({
   name: 'MainLayout',
 
   components: {
-    EssentialLink
+    EssentialLink,
   },
 
-  data () {
+  data() {
     const linksList: EssentialLinkProps[] = [
       {
         title: 'Pagina inicial',
         icon: 'school',
-        name: 'home'
+        name: 'home',
       },
     ];
 
@@ -114,8 +107,8 @@ export default defineComponent({
       linksList,
       leftDrawerOpen: false,
       userStore: useUserStore(),
-      loading: false
-    }
+      loading: false,
+    };
   },
 
   methods: {
@@ -123,23 +116,21 @@ export default defineComponent({
       this.leftDrawerOpen = !this.leftDrawerOpen;
     },
     async recoverUser(): Promise<void> {
-      await this.$axios.get('/user')
-        .then(response => {
-          this.userStore.setUser(response.data as IUser);
-        });
+      await this.$axios.get('/user').then((response) => {
+        this.userStore.setUser(response.data as IUser);
+      });
     },
     async logout(): Promise<void> {
       this.loading = true;
-      this.$axios.post('/logout')
-        .then(() => {
-          this.userStore.resetUser();
-        });
+      this.$axios.post('/logout').then(() => {
+        this.userStore.resetUser();
+      });
       this.loading = false;
-    }
+    },
   },
 
   mounted() {
     this.recoverUser();
-  }
+  },
 });
 </script>

@@ -1,7 +1,6 @@
 import { boot } from 'quasar/wrappers';
 import { Router, useRouter } from 'vue-router';
 
-
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $router: Router;

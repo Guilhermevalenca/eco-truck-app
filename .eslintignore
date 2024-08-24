@@ -7,3 +7,5 @@
 /quasar.config.*.temporary.compiled*
 /src-ssr
 /src-pwa
+
+quasar.config.js

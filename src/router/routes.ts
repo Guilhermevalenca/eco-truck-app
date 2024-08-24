@@ -9,26 +9,26 @@ const routes: RouteRecordRaw[] = [
       {
         path: '',
         component: () => import('pages/IndexPage.vue'),
-        name: 'home'
+        name: 'home',
       },
       {
         path: '/login',
         component: () => import('pages/LoginPage.vue'),
         name: 'login',
-        beforeEnter: noLogged
+        beforeEnter: noLogged,
       },
       {
         path: '/register',
         component: () => import('pages/RegisterPage.vue'),
         name: 'register',
-        beforeEnter: noLogged
+        beforeEnter: noLogged,
       },
       {
         path: '/profile',
         component: () => import('pages/ProfilePage.vue'),
         name: 'profile',
-        beforeEnter: logged
-      }
+        beforeEnter: logged,
+      },
     ],
   },
 

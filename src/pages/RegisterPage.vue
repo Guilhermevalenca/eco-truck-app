@@ -10,8 +10,8 @@ export default defineComponent({
     const form: IUser = {
       name: '',
       email: '',
-      password: ''
-    }
+      password: '',
+    };
     const userStore = useUserStore();
     return {
       form,
@@ -19,7 +19,7 @@ export default defineComponent({
       rules: userStore.rules,
       loading: false,
       showPassword: false,
-    }
+    };
   },
 
   methods: {
@@ -29,28 +29,30 @@ export default defineComponent({
         spinner: true,
         message: 'Carregando...',
         timeout: 0,
-        group: false
+        group: false,
       });
       const notifyNegative = () => {
         notify({
           type: 'negative',
-          message: 'Não foi possível realizar seu cadastro! preencha os campos corretamente',
+          message:
+            'Não foi possível realizar seu cadastro! preencha os campos corretamente',
           timeout: 4000,
           icon: 'warning',
-          spinner: false
+          spinner: false,
         });
-      }
-      await this.$axios.post('/register', this.form)
-        .then(response => {
-          if(response.data.success) {
+      };
+      await this.$axios
+        .post('/register', this.form)
+        .then((response) => {
+          if (response.data.success) {
             this.userStore.setUser(response.data.data as IUser);
-            this.$router.push({name: 'home'});
+            this.$router.push({ name: 'home' });
             notify({
               spinner: false,
               message: 'Cadastro realizado com sucesso!',
               type: 'positive',
               timeout: 3000,
-              icon: 'done'
+              icon: 'done',
             });
           } else {
             notifyNegative();
@@ -60,55 +62,52 @@ export default defineComponent({
           notifyNegative();
         });
       this.loading = false;
-    }
+    },
   },
 });
 </script>
 
 <template>
-<q-page class="row items-center justify-evenly">
-  <q-form
-    @submit.prevent="submit"
-    class="col-10 q-gutter-xs"
-  >
-    <q-input
-      v-model="form.name"
-      label="Name"
-      type="text"
-      outlined
-      :loading="loading"
-      :rules="rules.name"
-    />
-    <q-input
-      v-model="form.email"
-      label="Email"
-      type="email"
-      outlined
-      :loading="loading"
-      :rules="rules.email"
-    />
-    <q-input
-      v-model="form.password"
-      label="Password"
-      outlined
-      :loading="loading"
-      :type="showPassword ? 'text' : 'password'"
-      :rules="rules.password"
-    >
-      <template #append>
-        <q-icon
-          :name="`mdi-${showPassword ? 'eye-outline' : 'eye-off-outline'}`"
-          @click="showPassword = !showPassword"
-        />
-      </template>
-    </q-input>
-    <div class="flex justify-end">
-      <q-btn color="primary" :loading="loading" type="submit">Criar conta</q-btn>
-    </div>
-  </q-form>
-</q-page>
+  <q-page class="row items-center justify-evenly">
+    <q-form @submit.prevent="submit" class="col-10 q-gutter-xs">
+      <q-input
+        v-model="form.name"
+        label="Name"
+        type="text"
+        outlined
+        :loading="loading"
+        :rules="rules.name"
+      />
+      <q-input
+        v-model="form.email"
+        label="Email"
+        type="email"
+        outlined
+        :loading="loading"
+        :rules="rules.email"
+      />
+      <q-input
+        v-model="form.password"
+        label="Password"
+        outlined
+        :loading="loading"
+        :type="showPassword ? 'text' : 'password'"
+        :rules="rules.password"
+      >
+        <template #append>
+          <q-icon
+            :name="`mdi-${showPassword ? 'eye-outline' : 'eye-off-outline'}`"
+            @click="showPassword = !showPassword"
+          />
+        </template>
+      </q-input>
+      <div class="flex justify-end">
+        <q-btn color="primary" :loading="loading" type="submit"
+          >Criar conta</q-btn
+        >
+      </div>
+    </q-form>
+  </q-page>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -11,19 +11,20 @@ export default defineComponent({
       showPassword: false,
       rules: useUserStore()?.rules,
       loading: false,
-      showDialog: false
-    }
+      showDialog: false,
+    };
   },
 
   methods: {
     async submit() {
-      this.$axios.delete('/user', {
-        data: {
-          password: this.password,
-        }
-      })
+      this.$axios
+        .delete('/user', {
+          data: {
+            password: this.password,
+          },
+        })
         .then((response) => {
-          if(response.status === 204) {
+          if (response.status === 204) {
             this.$router.push('/login');
           }
         })
@@ -33,11 +34,11 @@ export default defineComponent({
             type: 'negative',
             icon: 'warning',
             position: 'center',
-            timeout: 2000
+            timeout: 2000,
           });
-        })
-    }
-  }
+        });
+    },
+  },
 });
 </script>
 
@@ -72,7 +73,9 @@ export default defineComponent({
             >
               <template #append>
                 <q-icon
-                  :name="`mdi-${showPassword ? 'eye-outline' : 'eye-off-outline'}`"
+                  :name="`mdi-${
+                    showPassword ? 'eye-outline' : 'eye-off-outline'
+                  }`"
                   @click="showPassword = !showPassword"
                 />
               </template>
@@ -100,6 +103,4 @@ export default defineComponent({
   </q-dialog>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
